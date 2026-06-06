@@ -221,7 +221,7 @@ typedef struct
 	ISM330BXAccelFullScale accel_full_scale; ///< Cached for unit conversion
 	ISM330BXGyroFullScale  gyro_full_scale;  ///< Cached for unit conversion
 	bool                   is_initialized;
-} ISM330BXDevice;
+} ISM330BX;
 
 #ifdef __cplusplus
 }

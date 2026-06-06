@@ -43,34 +43,34 @@ static const uint32_t ism330bx_reset_timeout_ms = 10U;
 
 /* ── Forward declarations ─────────────────────────────────────────────────── */
 
-static ISM330BXError ism330bxReadRegisters(const ISM330BXDevice* const dev,
+static ISM330BXError ism330bxReadRegisters(const ISM330BX* const dev,
                                            const uint8_t reg,
                                            void* const data,
                                            const uint16_t length);
-static ISM330BXError ism330bxWriteRegisters(const ISM330BXDevice* const dev,
+static ISM330BXError ism330bxWriteRegisters(const ISM330BX* const dev,
                                             const uint8_t reg,
                                             const void* const data,
                                             const uint16_t length);
-static ISM330BXError ism330bxReadByte(const ISM330BXDevice* const dev,
+static ISM330BXError ism330bxReadByte(const ISM330BX* const dev,
                                       const uint8_t reg,
                                       uint8_t* const value);
-static ISM330BXError ism330bxWriteByte(const ISM330BXDevice* const dev,
+static ISM330BXError ism330bxWriteByte(const ISM330BX* const dev,
                                        const uint8_t reg,
                                        const uint8_t value);
-static ISM330BXError ism330bxModifyByte(const ISM330BXDevice* const dev,
+static ISM330BXError ism330bxModifyByte(const ISM330BX* const dev,
                                         const uint8_t reg,
                                         const uint8_t mask,
                                         const uint8_t value);
-static ISM330BXError ism330bxApplyAccelConfig(ISM330BXDevice* const dev,
+static ISM330BXError ism330bxApplyAccelConfig(ISM330BX* const dev,
                                               const ISM330BXAccelConfig* const cfg);
-static ISM330BXError ism330bxApplyGyroConfig(ISM330BXDevice* const dev,
+static ISM330BXError ism330bxApplyGyroConfig(ISM330BX* const dev,
                                              const ISM330BXGyroConfig* const cfg);
 static uint32_t ism330bxAccelSensNanoG(const ISM330BXAccelFullScale fs);
 static uint32_t ism330bxGyroSensMicroDps(const ISM330BXGyroFullScale fs);
 
 /* ── 1. Initialization / Lifecycle / Identity ─────────────────────────────── */
 
-ISM330BXError ism330bxInit(ISM330BXDevice* const       dev,
+ISM330BXError ism330bxInit(ISM330BX* const       dev,
                            const ISM330BXConfig* const config,
                            const ISM330BXHAL* const    hal)
 {
@@ -148,7 +148,7 @@ ISM330BXError ism330bxInit(ISM330BXDevice* const       dev,
 	return ISM330BX_ERROR_OK;
 }
 
-ISM330BXError ism330bxReset(ISM330BXDevice* const dev)
+ISM330BXError ism330bxReset(ISM330BX* const dev)
 {
 	if (dev == NULL)
 		return ISM330BX_ERROR_INVALID_PARAM;
@@ -171,7 +171,7 @@ ISM330BXError ism330bxReset(ISM330BXDevice* const dev)
 	return ISM330BX_ERROR_TIMEOUT;
 }
 
-ISM330BXError ism330bxGetWHOAMI(const ISM330BXDevice* const dev, uint8_t* const who_am_i)
+ISM330BXError ism330bxGetWHOAMI(const ISM330BX* const dev, uint8_t* const who_am_i)
 {
 	if (dev == NULL || who_am_i == NULL)
 		return ISM330BX_ERROR_INVALID_PARAM;
@@ -183,7 +183,7 @@ ISM330BXError ism330bxGetWHOAMI(const ISM330BXDevice* const dev, uint8_t* const 
 
 /* ── 2. Accelerometer ─────────────────────────────────────────────────────── */
 
-ISM330BXError ism330bxSetAccelConfig(ISM330BXDevice* const            dev,
+ISM330BXError ism330bxSetAccelConfig(ISM330BX* const            dev,
                                      const ISM330BXAccelConfig* const config)
 {
 	if (dev == NULL || config == NULL)
@@ -194,7 +194,7 @@ ISM330BXError ism330bxSetAccelConfig(ISM330BXDevice* const            dev,
 	return ism330bxApplyAccelConfig(dev, config);
 }
 
-ISM330BXError ism330bxReadAccelRaw(const ISM330BXDevice* const dev,
+ISM330BXError ism330bxReadAccelRaw(const ISM330BX* const dev,
                                    ISM330BXAxesRaw* const      out)
 {
 	if (dev == NULL || out == NULL)
@@ -215,7 +215,7 @@ ISM330BXError ism330bxReadAccelRaw(const ISM330BXDevice* const dev,
 	return ISM330BX_ERROR_OK;
 }
 
-ISM330BXError ism330bxReadAccelMilliG(const ISM330BXDevice* const dev,
+ISM330BXError ism330bxReadAccelMilliG(const ISM330BX* const dev,
                                       ISM330BXAxesMilli* const    out)
 {
 	if (dev == NULL || out == NULL)
@@ -237,7 +237,7 @@ ISM330BXError ism330bxReadAccelMilliG(const ISM330BXDevice* const dev,
 
 /* ── 3. Gyroscope ─────────────────────────────────────────────────────────── */
 
-ISM330BXError ism330bxSetGyroConfig(ISM330BXDevice* const           dev,
+ISM330BXError ism330bxSetGyroConfig(ISM330BX* const           dev,
                                     const ISM330BXGyroConfig* const config)
 {
 	if (dev == NULL || config == NULL)
@@ -248,7 +248,7 @@ ISM330BXError ism330bxSetGyroConfig(ISM330BXDevice* const           dev,
 	return ism330bxApplyGyroConfig(dev, config);
 }
 
-ISM330BXError ism330bxReadGyroRaw(const ISM330BXDevice* const dev,
+ISM330BXError ism330bxReadGyroRaw(const ISM330BX* const dev,
                                   ISM330BXAxesRaw* const      out)
 {
 	if (dev == NULL || out == NULL)
@@ -267,7 +267,7 @@ ISM330BXError ism330bxReadGyroRaw(const ISM330BXDevice* const dev,
 	return ISM330BX_ERROR_OK;
 }
 
-ISM330BXError ism330bxReadGyroMilliDPS(const ISM330BXDevice* const dev,
+ISM330BXError ism330bxReadGyroMilliDPS(const ISM330BX* const dev,
                                        ISM330BXAxesMilli* const    out)
 {
 	if (dev == NULL || out == NULL)
@@ -289,7 +289,7 @@ ISM330BXError ism330bxReadGyroMilliDPS(const ISM330BXDevice* const dev,
 
 /* ── 4. Temperature ───────────────────────────────────────────────────────── */
 
-ISM330BXError ism330bxReadTempRaw(const ISM330BXDevice* const dev, int16_t* const raw)
+ISM330BXError ism330bxReadTempRaw(const ISM330BX* const dev, int16_t* const raw)
 {
 	if (dev == NULL || raw == NULL)
 		return ISM330BX_ERROR_INVALID_PARAM;
@@ -305,7 +305,7 @@ ISM330BXError ism330bxReadTempRaw(const ISM330BXDevice* const dev, int16_t* cons
 	return ISM330BX_ERROR_OK;
 }
 
-ISM330BXError ism330bxReadTempMilliCelsius(const ISM330BXDevice* const dev,
+ISM330BXError ism330bxReadTempMilliCelsius(const ISM330BX* const dev,
                                            int32_t* const              milli_celsius)
 {
 	if (dev == NULL || milli_celsius == NULL)
@@ -325,7 +325,7 @@ ISM330BXError ism330bxReadTempMilliCelsius(const ISM330BXDevice* const dev,
 
 /* ── 5. Status ────────────────────────────────────────────────────────────── */
 
-ISM330BXError ism330bxGetStatus(const ISM330BXDevice* const dev,
+ISM330BXError ism330bxGetStatus(const ISM330BX* const dev,
                                 ISM330BXStatus* const       status)
 {
 	if (dev == NULL || status == NULL)
@@ -346,7 +346,7 @@ ISM330BXError ism330bxGetStatus(const ISM330BXDevice* const dev,
 
 /* ── Internal helpers ─────────────────────────────────────────────────────── */
 
-static ISM330BXError ism330bxReadRegisters(const ISM330BXDevice* const dev,
+static ISM330BXError ism330bxReadRegisters(const ISM330BX* const dev,
                                            const uint8_t               reg,
                                            void* const                 data,
                                            const uint16_t              length)
@@ -354,7 +354,7 @@ static ISM330BXError ism330bxReadRegisters(const ISM330BXDevice* const dev,
 	return (dev->hal.readReg(reg, data, length) == 0) ? ISM330BX_ERROR_OK : ISM330BX_ERROR_COMM_FAIL;
 }
 
-static ISM330BXError ism330bxWriteRegisters(const ISM330BXDevice* const dev,
+static ISM330BXError ism330bxWriteRegisters(const ISM330BX* const dev,
                                             const uint8_t               reg,
                                             const void* const           data,
                                             const uint16_t              length)
@@ -362,21 +362,21 @@ static ISM330BXError ism330bxWriteRegisters(const ISM330BXDevice* const dev,
 	return (dev->hal.writeReg(reg, data, length) == 0) ? ISM330BX_ERROR_OK : ISM330BX_ERROR_COMM_FAIL;
 }
 
-static ISM330BXError ism330bxReadByte(const ISM330BXDevice* const dev,
+static ISM330BXError ism330bxReadByte(const ISM330BX* const dev,
                                       const uint8_t               reg,
                                       uint8_t* const              value)
 {
 	return ism330bxReadRegisters(dev, reg, value, 1U);
 }
 
-static ISM330BXError ism330bxWriteByte(const ISM330BXDevice* const dev,
+static ISM330BXError ism330bxWriteByte(const ISM330BX* const dev,
                                        const uint8_t               reg,
                                        const uint8_t               value)
 {
 	return ism330bxWriteRegisters(dev, reg, &value, 1U);
 }
 
-static ISM330BXError ism330bxModifyByte(const ISM330BXDevice* const dev,
+static ISM330BXError ism330bxModifyByte(const ISM330BX* const dev,
                                         const uint8_t               reg,
                                         const uint8_t               mask,
                                         const uint8_t               value)
@@ -389,7 +389,7 @@ static ISM330BXError ism330bxModifyByte(const ISM330BXDevice* const dev,
 	return ism330bxWriteByte(dev, reg, updated);
 }
 
-static ISM330BXError ism330bxApplyAccelConfig(ISM330BXDevice* const            dev,
+static ISM330BXError ism330bxApplyAccelConfig(ISM330BX* const            dev,
                                               const ISM330BXAccelConfig* const cfg)
 {
 	/* CTRL1 = (OP_MODE_XL << 4) | ODR_XL. ODR is the LOW nibble on BX
@@ -411,7 +411,7 @@ static ISM330BXError ism330bxApplyAccelConfig(ISM330BXDevice* const            d
 	return ISM330BX_ERROR_OK;
 }
 
-static ISM330BXError ism330bxApplyGyroConfig(ISM330BXDevice* const           dev,
+static ISM330BXError ism330bxApplyGyroConfig(ISM330BX* const           dev,
                                              const ISM330BXGyroConfig* const cfg)
 {
 	/* CTRL2 = (OP_MODE_G << 4) | ODR_G. */

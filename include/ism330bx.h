@@ -15,7 +15,7 @@
  * around either SPI (mode 0 or 3) or I²C.
  *
  * **Thread safety:** the driver is *not* thread-safe. Callers must serialize
- * access to a given ::ISM330BXDevice handle.
+ * access to a given ::ISM330BX handle.
  *
  * API layering:
  *   1. Initialization / Lifecycle / Identity
@@ -58,14 +58,14 @@ extern "C" {
  * @param[in]     hal     HAL function pointers. `readReg` and `writeReg` must be non-NULL.
  * @return ::ISM330BX_ERROR_OK on success.
  */
-ISM330BXError ism330bxInit(ISM330BXDevice* const       dev,
+ISM330BXError ism330bxInit(ISM330BX* const       dev,
                            const ISM330BXConfig* const config,
                            const ISM330BXHAL* const    hal);
 
 /**
  * @brief Issue a software reset (CTRL3.SW_RESET) and poll until it clears.
  */
-ISM330BXError ism330bxReset(ISM330BXDevice* const dev);
+ISM330BXError ism330bxReset(ISM330BX* const dev);
 
 /**
  * @brief Read the WHO_AM_I register. Should be ::ISM330BX_WHO_AM_I_VALUE.
@@ -73,7 +73,7 @@ ISM330BXError ism330bxReset(ISM330BXDevice* const dev);
  * @param[in]  dev      Initialized device handle.
  * @param[out] who_am_i Caller-allocated byte to fill in. Must not be NULL.
  */
-ISM330BXError ism330bxGetWHOAMI(const ISM330BXDevice* const dev, uint8_t* const who_am_i);
+ISM330BXError ism330bxGetWHOAMI(const ISM330BX* const dev, uint8_t* const who_am_i);
 
 /* ── 2. Accelerometer configuration & data ────────────────────────────────── */
 
@@ -84,7 +84,7 @@ ISM330BXError ism330bxGetWHOAMI(const ISM330BXDevice* const dev, uint8_t* const 
  * read-modify-write so other CTRL8 fields (HP/LPF2 cutoff, dual-channel,
  * QVAR HPF) are preserved.
  */
-ISM330BXError ism330bxSetAccelConfig(ISM330BXDevice* const            dev,
+ISM330BXError ism330bxSetAccelConfig(ISM330BX* const            dev,
                                      const ISM330BXAccelConfig* const config);
 
 /**
@@ -94,13 +94,13 @@ ISM330BXError ism330bxSetAccelConfig(ISM330BXDevice* const            dev,
  * does a single auto-incremented bus read and re-orders into the standard
  * {x,y,z} struct for caller convenience.
  */
-ISM330BXError ism330bxReadAccelRaw(const ISM330BXDevice* const dev,
+ISM330BXError ism330bxReadAccelRaw(const ISM330BX* const dev,
                                    ISM330BXAxesRaw* const      out);
 
 /**
  * @brief Read the accelerometer in milli-g, applying the cached full-scale.
  */
-ISM330BXError ism330bxReadAccelMilliG(const ISM330BXDevice* const dev,
+ISM330BXError ism330bxReadAccelMilliG(const ISM330BX* const dev,
                                       ISM330BXAxesMilli* const    out);
 
 /* ── 3. Gyroscope configuration & data ────────────────────────────────────── */
@@ -111,19 +111,19 @@ ISM330BXError ism330bxReadAccelMilliG(const ISM330BXDevice* const dev,
  * Writes CTRL2 (ODR + OP_MODE) and updates CTRL6 bits[3:0] (FS_G) via
  * read-modify-write to preserve LPF1 bandwidth in the same register.
  */
-ISM330BXError ism330bxSetGyroConfig(ISM330BXDevice* const           dev,
+ISM330BXError ism330bxSetGyroConfig(ISM330BX* const           dev,
                                     const ISM330BXGyroConfig* const config);
 
 /**
  * @brief Read the gyroscope's last conversion (raw 16-bit signed counts).
  */
-ISM330BXError ism330bxReadGyroRaw(const ISM330BXDevice* const dev,
+ISM330BXError ism330bxReadGyroRaw(const ISM330BX* const dev,
                                   ISM330BXAxesRaw* const      out);
 
 /**
  * @brief Read the gyroscope in milli-degrees per second, using the cached FS.
  */
-ISM330BXError ism330bxReadGyroMilliDPS(const ISM330BXDevice* const dev,
+ISM330BXError ism330bxReadGyroMilliDPS(const ISM330BX* const dev,
                                        ISM330BXAxesMilli* const    out);
 
 /* ── 4. Temperature ───────────────────────────────────────────────────────── */
@@ -133,12 +133,12 @@ ISM330BXError ism330bxReadGyroMilliDPS(const ISM330BXDevice* const dev,
  *
  * Conversion (datasheet): degC = raw / 256 + 25.
  */
-ISM330BXError ism330bxReadTempRaw(const ISM330BXDevice* const dev, int16_t* const raw);
+ISM330BXError ism330bxReadTempRaw(const ISM330BX* const dev, int16_t* const raw);
 
 /**
  * @brief Read the on-chip temperature in milli-degrees Celsius.
  */
-ISM330BXError ism330bxReadTempMilliCelsius(const ISM330BXDevice* const dev,
+ISM330BXError ism330bxReadTempMilliCelsius(const ISM330BX* const dev,
                                            int32_t* const              milli_celsius);
 
 /* ── 5. Status / data-ready ───────────────────────────────────────────────── */
@@ -146,7 +146,7 @@ ISM330BXError ism330bxReadTempMilliCelsius(const ISM330BXDevice* const dev,
 /**
  * @brief Read STATUS_REG and decode XLDA / GDA / TDA bits.
  */
-ISM330BXError ism330bxGetStatus(const ISM330BXDevice* const dev,
+ISM330BXError ism330bxGetStatus(const ISM330BX* const dev,
                                 ISM330BXStatus* const       status);
 
 #ifdef __cplusplus
